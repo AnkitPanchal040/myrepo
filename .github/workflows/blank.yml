@@ -1,0 +1,25 @@
+name: Sync to Azure DevOps
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Push to Azure DevOps
+        env:
+          AZURE_DEVOPS_REPO_URL: https://CATS4U@dev.azure.com/CATS4U/Devops-testing/_git/POC
+          AZURE_DEVOPS_USERNAME: ${{ secrets.AZURE_DEVOPS_USERNAME }}
+          AZURE_DEVOPS_TOKEN: ${{ secrets.AZURE_DEVOPS_TOKEN }}
+        run: |
+          git remote add azure $AZURE_DEVOPS_REPO_URL
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "GitHub Actions"
+          git push --mirror azure
